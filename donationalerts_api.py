@@ -3,13 +3,16 @@ from flask import request
 
 
 class DonationAlertsApi:
+	"""
+	This class describes work with Donation Alerts API
+	"""
 
 	def __init__(self, client_id, client_secret, redirect_uri, scope):
 		symbols = [",", ", ", " ", "%20"]
 
 		for symbol in symbols:
 			if symbol in scope:
-				self.scope = scope.replace(symbol, "%20").strip()
+				self.scope = scope.replace(symbol, "%20").strip() # Replaces some symbols on '%20' for stable work
 			else:
 				self.scope = scope
 
