@@ -49,4 +49,8 @@ def login():
   api.send_custom_alert(access_token, 12, "Test headline", "Test something message...")
   
   return user
+  
+  
+if __name__ == "__main__":
+  client.run(debug=True)
 ```
