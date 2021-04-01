@@ -50,5 +50,3 @@ def login():
   
   return user
 ```
-
-![](https://static-s.aa-cdn.net/img/gp/20600007776348/FZc95BN57EpF2FOL2JDLaRQ1H2ibGnRVbvAY_F6sja-C8_q1qQGCXZYcNTjTZi7ZISE=w300?v=1)
