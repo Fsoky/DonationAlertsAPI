@@ -1,7 +1,7 @@
 # Donation-Alerts-API-Python
 This module for python. With help this module, you can interact with API Donation Alerts
 
-`pip install donationalerts_api -U`
+    pip install donationalerts_api -U
 
 [PyPi](https://pypi.org/project/donationalerts-api/)
 
