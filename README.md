@@ -28,10 +28,10 @@ This module for python. With help this module, you can interact with API Donatio
 ### Example:
 ```py
 from flask import Flask, redirect
-from donationalerts_api import DonationAlertsApi
+from donationalerts_api import DonationAlertsApi, Scopes
 
 client = Flask(__name__)
-api = DonationAlertsApi("9999", "a43f67k9920h01a2wdw", "http://127.0.0.1:5000/login", "scopes")
+api = DonationAlertsApi("9999", "a43f67k9920h01a2wdw", "http://127.0.0.1:5000/login", Scopes.all_scopes)
 
 
 @client.route("/", methods=["get"])
