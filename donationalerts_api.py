@@ -2,26 +2,49 @@ import requests
 from flask import request
 
 
+class Scopes:
+
+	user_show = "oauth-user-show"
+
+	donation_subcribe = "oauth-donation-subscribe"
+	donation_index = "oauth-donation-index"
+
+	custom_alert_store = "oauth-custom_alert-store"
+
+	goal_subcribe = "oauth-goal-subscribe"
+	poll_subcribe = "oauth-poll-subscribe"
+
+	all_scopes = [user_show, donation_subcribe, donation_index, custom_alert_store,
+					goal_subcribe, poll_subcribe]
+
+
 class DonationAlertsApi:
 	"""
 	This class describes work with Donation Alerts API
 	"""
 
-	def __init__(self, client_id, client_secret, redirect_uri, scope):
+	def __init__(self, client_id, client_secret, redirect_uri, scopes):
 		symbols = [",", ", ", " ", "%20"]
 
+		if isinstance(scopes, list):
+			obj_scopes = []
+			for scope in scopes:
+				obj_scopes.append(scope)
+
+			scopes = " ".join(obj_scopes)
+			
 		for symbol in symbols:
-			if symbol in scope:
-				self.scope = scope.replace(symbol, "%20").strip() # Replaces some symbols on '%20' for stable work
+			if symbol in scopes:
+				self.scope = scopes.replace(symbol, "%20").strip() # Replaces some symbols on '%20' for stable work
 			else:
-				self.scope = scope
+				self.scope = scopes
 
 		self.client_id = client_id
 		self.client_secret = client_secret
 		self.redirect_uri = redirect_uri
 		self.login_url = f"https://www.donationalerts.com/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code&scope={self.scope}"
 		self.token_url = f"https://www.donationalerts.com/oauth/token?grant_type=authorization_code&client_id={client_id}&client_secret={client_secret}&redirect_uri={redirect_uri}&code="
-		
+
 		# API LINKS
 		self.user_api = "https://www.donationalerts.com/api/v1/user/oauth"
 		self.donations_api = "https://www.donationalerts.com/api/v1/alerts/donations"
@@ -29,13 +52,11 @@ class DonationAlertsApi:
 
 
 	def login(self):
-		link = self.login_url
-		return link
+		return self.login_url
 
 
 	def get_code(self):
-		code = request.args.get("code")
-		return code
+		return request.args.get("code")
 
 
 	def get_access_token(self, code):
