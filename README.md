@@ -10,9 +10,10 @@ This module for python. With help this module, you can interact with API Donatio
 [Donation alerts application clients](https://www.donationalerts.com/application/clients)
 
 
-|Main class|Description|
+|Class|Description|
 |----------|-----------|
 |DonationAlertsApi(client_id, client_secret, redirect_uri, scope)|Request to API Donation Alerts|
+|Scopes|Has attributes for the instruction of scopes (user_show, donation_index, donation_subcribe, custom_alert_store, goal_subcribe, poll_subcribe, all_scopes)|
 
 |Method|Description|
 |------|-----------|
@@ -53,4 +54,13 @@ def login():
   
 if __name__ == "__main__":
   client.run(debug=True)
+```
+
+## Now you can pass list of scopes:
+
+```py
+from donationalerts_api import DonationAlertsApi, Scopes # New class: Scopes
+
+scopes = ["oauth-user-show", "oauth-donation-index", "oauth-poll-subcribe"] # Also right variant
+api = DonationAlertsApi("client id", "client secret", "redirect uri", [Scopes.user_show, Scopes.donation_index]) # Or you can pass all scopes: Scopes.all_scopes
 ```
