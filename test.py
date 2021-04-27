@@ -1,9 +1,8 @@
 from flask import Flask, redirect
-from dapi import DonationAlertsApi
+from donationalerts_api import DonationAlertsApi, Scopes
 
 client = Flask(__name__)
-scopes = "oauth-user-show oauth-custom_alert-store oauth-donation-index oauth-custom_alert-store oauth-goal-subscribe oauth-poll-subscribe"
-api = DonationAlertsApi("client id", "client secret", "redirect uri", scopes)
+api = DonationAlertsApi("client id", "client secret", "http://127.0.0.1/login", [Scopes.user_show, Scopes.donation_index])
 
 
 @client.route("/", methods=["get"])
@@ -17,8 +16,6 @@ def login():
 	access_token = api.get_access_token(code)
 
 	user = api.get_user(access_token)
-	donate = api.get_donations(access_token)
-	
 	return user
 
 
