@@ -13,7 +13,7 @@ This module for python. With help this module, you can interact with API Donatio
 |Class|Description|
 |----------|-----------|
 |DonationAlertsApi(client_id, client_secret, redirect_uri, scope)|Request to API Donation Alerts|
-|Scopes|Has attributes for the instruction of scopes (user_show, donation_index, donation_subcribe, custom_alert_store, goal_subcribe, poll_subcribe, all_scopes)|
+|Scopes|Has attributes for the instruction of scopes (user_show, donation_index, donation_subscribe, custom_alert_store, goal_subscribe, poll_subscribe, all_scopes)|
 
 |Method|Description|
 |------|-----------|
