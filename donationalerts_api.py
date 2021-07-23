@@ -1,21 +1,23 @@
 import requests
+import json
 from flask import request
+from websocket import create_connection
 
 
 class Scopes:
 
 	user_show = "oauth-user-show"
 
-	donation_subcribe = "oauth-donation-subscribe"
+	donation_subscribe = "oauth-donation-subscribe"
 	donation_index = "oauth-donation-index"
 
 	custom_alert_store = "oauth-custom_alert-store"
 
-	goal_subcribe = "oauth-goal-subscribe"
-	poll_subcribe = "oauth-poll-subscribe"
+	goal_subscribe = "oauth-goal-subscribe"
+	poll_subscribe = "oauth-poll-subscribe"
 
-	all_scopes = [user_show, donation_subcribe, donation_index, custom_alert_store,
-					goal_subcribe, poll_subcribe]
+	all_scopes = [user_show, donation_subscribe, donation_index, custom_alert_store,
+					goal_subscribe, poll_subscribe]
 
 
 class DonationAlertsApi:
@@ -109,3 +111,52 @@ class DonationAlertsApi:
 		custom_alert_object = requests.post(url=self.custom_alerts_api, data=data, headers=headers).json()
 
 		return custom_alert_object
+
+
+class Centrifugo:
+
+	def __init__(self, socket_connection_token, access_token, user_id):
+		self.socket_connection_token = socket_connection_token
+		self.access_token = access_token
+		self.user_id = user_id
+
+		self.uri = "wss://centrifugo.donationalerts.com/connection/websocket"
+
+	def connect(self):
+		self.ws = create_connection(self.uri)
+		self.ws.send(json.dumps(
+			{
+				"params": {
+					"token": self.socket_connection_token
+				},
+				"id": self.user_id
+			}
+		))
+		self.ws_response = json.loads(self.ws.recv())
+
+		return self.ws_response
+
+	def subscribe(self):
+		headers = {
+			"Authorization": f"Bearer {self.access_token}",
+			"Content-Type": "application/json"
+		}
+		data = {
+			"channels": [f"$alerts:donation_{self.user_id}"],
+			"client": self.ws_response["result"]["client"]
+		}
+
+		response = requests.post(url="https://www.donationalerts.com/api/v1/centrifuge/subscribe", data=json.dumps(data), headers=headers).json()
+
+		self.ws.send(json.dumps(
+			{
+				"params": {
+					"channel": f"$alerts:donation_{self.user_id}",
+					"token": response["channels"][0]["token"]
+				},
+				"method": 1,
+				"id": self.user_id
+			}
+		))
+
+		return json.loads(self.ws.recv())
