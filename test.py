@@ -1,8 +1,8 @@
 from flask import Flask, redirect
-from donationalerts_api import DonationAlertsApi, Scopes, Centrifugo
+from donationalerts_api import DonationAlertsApi, Centrifugo, Scopes, Channels
 
 app = Flask(__name__)
-api = DonationAlertsApi("client id", "client secret", "http://127.0.0.1:5000/login", Scopes.all_scopes)
+api = DonationAlertsApi("client id", "client secret", "http://127.0.0.1:5000/login", Scopes.ALL_SCOPES)
 
 
 @app.route("/", methods=["get"])
@@ -23,7 +23,8 @@ def login():
   fugo = Centrifugo(socket_token, access_token, user_id)
   fugo.connect()
 
-  return fugo.subscribe()
+  return fugo.subscribe([Channels.NEW_DONATION_ALERTS])
+  
 
 if __name__ == "__main__":
   app.run(debug=True)
