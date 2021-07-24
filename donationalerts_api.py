@@ -6,18 +6,29 @@ from websocket import create_connection
 
 class Scopes:
 
-	user_show = "oauth-user-show"
+	USER_SHOW = "oauth-user-show"
 
-	donation_subscribe = "oauth-donation-subscribe"
-	donation_index = "oauth-donation-index"
+	DONATION_SUBSCRIBE = "oauth-donation-subscribe"
+	DONATION_INDEX = "oauth-donation-index"
 
-	custom_alert_store = "oauth-custom_alert-store"
+	CUSTOM_ALERT_STORE = "oauth-custom_alert-store"
 
-	goal_subscribe = "oauth-goal-subscribe"
-	poll_subscribe = "oauth-poll-subscribe"
+	GOAL_SUBSCRIBE = "oauth-goal-subscribe"
+	POLL_SUBSCRIBE = "oauth-poll-subscribe"
 
-	all_scopes = [user_show, donation_subscribe, donation_index, custom_alert_store,
-					goal_subscribe, poll_subscribe]
+	ALL_SCOPES = [USER_SHOW, DONATION_INDEX, DONATION_SUBSCRIBE, CUSTOM_ALERT_STORE,
+					GOAL_SUBSCRIBE, POLL_SUBSCRIBE]
+
+
+class Channels:
+
+	NEW_DONATION_ALERTS = "$alerts:donation_"
+
+	DONATION_GOALS_UPDATES = "$goals:goal_"
+
+	POLLS_UPDATES = "$polls:poll_"
+
+	ALL_CHANNELS = [NEW_DONATION_ALERTS, DONATION_GOALS_UPDATES, POLLS_UPDATES]
 
 
 class DonationAlertsApi:
@@ -52,14 +63,11 @@ class DonationAlertsApi:
 		self.donations_api = "https://www.donationalerts.com/api/v1/alerts/donations"
 		self.custom_alerts_api = "https://www.donationalerts.com/api/v1/custom_alert"
 
-
 	def login(self):
 		return self.login_url
 
-
 	def get_code(self):
 		return request.args.get("code")
-
 
 	def get_access_token(self, code):
 		payload = {
@@ -74,7 +82,6 @@ class DonationAlertsApi:
 		access_token = requests.post(url=self.token_url, data=payload).json()
 		return access_token.get("access_token")
 
-
 	def get_donations(self, access_token):
 		headers = {
 			"Authorization": f"Bearer {access_token}",
@@ -82,8 +89,7 @@ class DonationAlertsApi:
 		}
 		donate_object = requests.get(url=self.donations_api, headers=headers).json()
 
-		return donate_object # HERE PROBLEMS!!!
-
+		return donate_object
 
 	def get_user(self, access_token):
 		headers = {
@@ -93,7 +99,6 @@ class DonationAlertsApi:
 		user_object = requests.get(url=self.user_api, headers=headers).json()
 
 		return user_object
-
 
 	def send_custom_alert(self, access_token, external_id, headline, message, image_url=None, sound_url=None, is_shown=0):
 		headers = {
@@ -136,27 +141,31 @@ class Centrifugo:
 
 		return self.ws_response
 
-	def subscribe(self):
+	def subscribe(self, channels):
+		chnls = []
+		for channel in channels:
+			chnls.append(f"{channel}{self.user_id}")
+
 		headers = {
 			"Authorization": f"Bearer {self.access_token}",
 			"Content-Type": "application/json"
 		}
 		data = {
-			"channels": [f"$alerts:donation_{self.user_id}"],
+			"channels": chnls,
 			"client": self.ws_response["result"]["client"]
 		}
 
 		response = requests.post(url="https://www.donationalerts.com/api/v1/centrifuge/subscribe", data=json.dumps(data), headers=headers).json()
-
-		self.ws.send(json.dumps(
-			{
-				"params": {
-					"channel": f"$alerts:donation_{self.user_id}",
-					"token": response["channels"][0]["token"]
-				},
-				"method": 1,
-				"id": self.user_id
-			}
-		))
+		for ch in response["channels"]:
+			self.ws.send(json.dumps(
+				{
+					"params": {
+						"channel": ch["channel"],
+						"token": ch["token"]
+					},
+					"method": 1,
+					"id": self.user_id
+				}
+			))
 
 		return json.loads(self.ws.recv())
