@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "donationalerts-api"
-version = "1.0.4"
+version = "1.0.5"
 description = "https://github.com/Fsoky/Donation-Alerts-API-Python"
 readme = "README.md"
 authors = ["Fsoky Community <cyberuest0x12@gmail.com>"]
