@@ -13,7 +13,9 @@ This module for python. With help this module, you can interact with API Donatio
 |Class|Description|
 |----------|-----------|
 |DonationAlertsApi(client_id, client_secret, redirect_uri, scope)|Request to API Donation Alerts|
-|Scopes|Has attributes for the instruction of scopes (user_show, donation_index, donation_subscribe, custom_alert_store, goal_subscribe, poll_subscribe, all_scopes)|
+|Scopes|Has attributes for the instruction of scopes (USER_SHOW, DONATION_INDEX, DONATION_SUBSCRIBE, CUSTOM_ALERT_STORE, GOAL_SUBSCRIBE, POLL_SUBSCRIBE, ALL_SCOPES)|
+|Channels|Has attributes for the subscribe to channels (NEW_DONATION_ALERTS, DONATION_GOALS_UPDATES, POLLS_UPDATES, ALL_CHANNELS)|
+|Centrifugo(socket_connection_token, access_token, user_id)|Work with centrifugo|
 
 |Method|Description|
 |------|-----------|
@@ -23,37 +25,35 @@ This module for python. With help this module, you can interact with API Donatio
 |get_donations(access_token)|Receive information about donate (messages)|
 |get_user(access_token)|Receive information about user|
 |send_custom_alert(access_token, external_id, headline, messages, image_url=None, sound_url=None, is_shown=0)|Send custom alert|
+|connect()|Connect to centrifugo websocket server|
+|subscribe(channels)|Subscribe to centrifugo channels|
 
 
 ### Example:
 ```py
 from flask import Flask, redirect
-from donationalerts_api import DonationAlertsApi, Scopes
+from donationalerts_api import DonationAlertsApi, Centrifugo, Scopes, Channels
 
-client = Flask(__name__)
-api = DonationAlertsApi("9999", "a43f67k9920h01a2wdw", "http://127.0.0.1:5000/login", Scopes.all_scopes)
+app = Flask(__name__)
+api = DonationAlertsApi("client id", "client secret", "http://127.0.0.1:5000/login", Scopes.ALL_SCOPES)
 
 
-@client.route("/", methods=["get"])
+@app.route("/", methods=["get"])
 def index():
-  redirect(api.login())
+  return redirect(api.login())
   
 
-@client.route("/login", methods=["get"])
+@app.route("/login", methods=["get"])
 def login():
   code = api.get_code()
   access_token = api.get_access_token(code)
-  
+
   user = api.get_user(access_token)
-  donations = api.get_donations(access_token)
-  
-  api.send_custom_alert(access_token, 12, "Test headline", "Test something message...")
-  
+
   return user
-  
-  
+
 if __name__ == "__main__":
-  client.run(debug=True)
+  app.run(debug=True)
 ```
 
 ## Now you can pass list of scopes:
@@ -61,6 +61,38 @@ if __name__ == "__main__":
 ```py
 from donationalerts_api import DonationAlertsApi, Scopes # New class: Scopes
 
-scopes = ["oauth-user-show", "oauth-donation-index", "oauth-poll-subcribe"] # Also right variant
-api = DonationAlertsApi("client id", "client secret", "redirect uri", [Scopes.user_show, Scopes.donation_index]) # Or you can pass all scopes: Scopes.all_scopes
+scopes = ["oauth-user-show", "oauth-donation-index", "oauth-poll-subscribe"] # Also right variant
+api = DonationAlertsApi("client id", "client secret", "redirect uri", [Scopes.USER_SHOW, Scopes.DONATION_INDEX]) # Or you can pass all scopes: Scopes.ALL_SCOPES
+```
+
+## Centrifugo, new events in real-time
+
+```py
+from flask import Flask, redirect
+from donationalerts_api import DonationAlertsApi, Centrifugo, Scopes, Channels
+
+app = Flask(__name__)
+api = DonationAlertsApi("client id", "client secret", "http://127.0.0.1:5000/login", Scopes.ALL_SCOPES)
+
+
+@app.route("/", methods=["get"])
+def index():
+  return redirect(api.login())
+
+
+@app.route("/login", methods=["get"])
+def login():
+  code = api.get_code()
+
+  access_token = api.get_access_token(code)
+  socket_token = api.get_user(access_token)["data"]["socket_connection_token"]
+  user_id = api.get_user(access_token)["data"]["id"]
+
+  fugo = Centrifugo(socket_token, access_token, user_id)
+  fugo.connect()
+
+  return fugo.subscribe([Channels.NEW_DONATION_ALERTS])
+
+if __name__ == "__main__":
+  app.run(debug=True)
 ```
