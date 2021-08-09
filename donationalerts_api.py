@@ -56,7 +56,7 @@ class DonationAlertsApi:
 		self.client_secret = client_secret
 		self.redirect_uri = redirect_uri
 		self.login_url = f"https://www.donationalerts.com/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code&scope={self.scope}"
-		self.token_url = f"https://www.donationalerts.com/oauth/token?grant_type=authorization_code&client_id={client_id}&client_secret={client_secret}&redirect_uri={redirect_uri}&code="
+		self.token_url = f"https://www.donationalerts.com/oauth/token"
 
 		# API LINKS
 		self.user_api = "https://www.donationalerts.com/api/v1/user/oauth"
@@ -69,7 +69,7 @@ class DonationAlertsApi:
 	def get_code(self):
 		return request.args.get("code")
 
-	def get_access_token(self, code):
+	def get_access_token(self, code, full=False):
 		payload = {
 			"client_id": self.client_id,
 			"client_secret": self.client_secret,
@@ -80,7 +80,9 @@ class DonationAlertsApi:
 		}
 
 		access_token = requests.post(url=self.token_url, data=payload).json()
-		return access_token.get("access_token")
+		self.refresh_token = access_token.get("refresh_token")
+
+		return access_token if full else access_token.get("access_token")
 
 	def get_donations(self, access_token):
 		headers = {
@@ -98,7 +100,7 @@ class DonationAlertsApi:
 		}
 		user_object = requests.get(url=self.user_api, headers=headers).json()
 
-		return user_object
+		return user_object["data"]
 
 	def send_custom_alert(self, access_token, external_id, headline, message, image_url=None, sound_url=None, is_shown=0):
 		headers = {
@@ -116,6 +118,20 @@ class DonationAlertsApi:
 		custom_alert_object = requests.post(url=self.custom_alerts_api, data=data, headers=headers).json()
 
 		return custom_alert_object
+
+	def get_refresh_token(self):
+		headers = {"Content-Type": "application/x-www-form-urlencoded"}
+		data = {
+			"grant_type": "refresh_token",
+			"client_id": self.client_id,
+			"client_secret": self.client_secret,
+			"refresh_token": self.refresh_token,
+			"redirect_uri": self.redirect_uri,
+			"scope": self.scope
+		}
+
+		response = requests.post(url=self.token_url, data=data, headers=headers).json()
+		return response
 
 
 class Centrifugo:
@@ -142,9 +158,12 @@ class Centrifugo:
 		return self.ws_response
 
 	def subscribe(self, channels):
-		chnls = []
-		for channel in channels:
-			chnls.append(f"{channel}{self.user_id}")
+		chnls = [f"{channels}{self.user_id}"]
+
+		if isinstance(channels, list):
+			chnls = []
+			for channel in channels:
+				chnls.append(f"{channel}{self.user_id}")
 
 		headers = {
 			"Authorization": f"Bearer {self.access_token}",
@@ -154,7 +173,7 @@ class Centrifugo:
 			"channels": chnls,
 			"client": self.ws_response["result"]["client"]
 		}
-
+		
 		response = requests.post(url="https://www.donationalerts.com/api/v1/centrifuge/subscribe", data=json.dumps(data), headers=headers).json()
 		for ch in response["channels"]:
 			self.ws.send(json.dumps(
@@ -167,5 +186,9 @@ class Centrifugo:
 					"id": self.user_id
 				}
 			))
+	
+		answer = {"response": self.ws.recv(), "sec_response": self.ws.recv()}
+		return answer
 
-		return json.loads(self.ws.recv())
+	def listen(self):
+		return json.loads(self.ws.recv())["result"]["data"]["data"]
