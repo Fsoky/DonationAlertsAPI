@@ -16,6 +16,7 @@ This module for python. With help this module, you can interact with API Donatio
 |Scopes|Has attributes for the instruction of scopes (USER_SHOW, DONATION_INDEX, DONATION_SUBSCRIBE, CUSTOM_ALERT_STORE, GOAL_SUBSCRIBE, POLL_SUBSCRIBE, ALL_SCOPES)|
 |Channels|Has attributes for the subscribe to channels (NEW_DONATION_ALERTS, DONATION_GOALS_UPDATES, POLLS_UPDATES, ALL_CHANNELS)|
 |Centrifugo(socket_connection_token, access_token, user_id)|Work with centrifugo|
+|Alert(token)|Recieve donation in real-time without Oauth2|
 
 |Method|Description|
 |------|-----------|
@@ -97,4 +98,10 @@ def login():
 
 if __name__ == "__main__":
   app.run(debug=True)
+```
+
+## New donations in real-time without Oauth2
+
+```py
+from donationalerts_api import Alert
 ```
