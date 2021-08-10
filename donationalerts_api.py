@@ -2,6 +2,7 @@ import requests
 import json
 from flask import request
 from websocket import create_connection
+import socketio
 
 
 class Scopes:
@@ -192,3 +193,24 @@ class Centrifugo:
 
 	def listen(self):
 		return json.loads(self.ws.recv())["result"]["data"]["data"]
+
+sio = socketio.Client()
+
+
+class Alert:
+
+	def __init__(self, token):
+		self.token = token
+
+	def event(self):
+		def wrapper(function):
+			@sio.on("connect")
+			def on_connect():
+				sio.emit("add-user", {"token": self.token, "type": "alert_widget"})
+
+			@sio.on("donation")
+			def on_message(data):
+				function(json.loads(data))
+
+			sio.connect("wss://socket.donationalerts.ru:443", transports="websocket")
+		return wrapper
