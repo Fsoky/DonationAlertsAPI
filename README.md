@@ -102,7 +102,7 @@ if __name__ == "__main__":
 
 ## New donations in real-time without Oauth2
 
-![token](https://imgur.com/8SbpEQu)
+![token](https://github.com/Fsoky/Donation-Alerts-API-Python/blob/main/Screenshot_2.png)
 
 ```py
 from donationalerts_api import Alert
@@ -113,3 +113,5 @@ alert = Alert("token")
 def new_donation(event):
   print(event)
 ```
+
+![example](https://github.com/Fsoky/Donation-Alerts-API-Python/blob/main/Screenshot_1.png)
