@@ -102,7 +102,7 @@ if __name__ == "__main__":
 
 ## New donations in real-time without Oauth2
 
-
+[!token](https://imgur.com/8SbpEQu)
 
 ```py
 from donationalerts_api import Alert
