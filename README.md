@@ -1,5 +1,8 @@
 # Donation Alerts API Python
-__Модуль для Python, который позволит легко работать с Donation Alerts API__ \
+__Модуль для Python, который позволит легко работать с Donation Alerts API__
+
+__pip install donationalerts-api -U__
+
 [Создать свое приложение Donation Alerts](https://www.donationalerts.com/application/clients) \
 [Официальная документация Donation Alerts API](https://www.donationalerts.com/apidoc)
 
