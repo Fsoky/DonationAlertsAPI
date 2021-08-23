@@ -6,6 +6,7 @@ import socketio
 
 
 class Scopes:
+	"""Удобный класс, для простого указания прав в приложении"""
 
 	USER_SHOW = "oauth-user-show"
 
@@ -22,6 +23,7 @@ class Scopes:
 
 
 class Channels:
+	"""Права для подписки на каналы Centrifugo"""
 
 	NEW_DONATION_ALERTS = "$alerts:donation_"
 
@@ -33,9 +35,7 @@ class Channels:
 
 
 class DonationAlertsApi:
-	"""
-	This class describes work with Donation Alerts API
-	"""
+	"""Основной класс для работы с DA API"""
 
 	def __init__(self, client_id, client_secret, redirect_uri, scopes):
 		symbols = [",", ", ", " ", "%20"]
@@ -68,9 +68,15 @@ class DonationAlertsApi:
 		return self.login_url
 
 	def get_code(self):
-		return request.args.get("code")
+		return request.args.get("code") # Получаем аргмент "code" из адресной строки
 
 	def get_access_token(self, code, full=False):
+		""" Параметр full=False
+
+		Если True, то выводит весь json объект, а не только access_token
+
+		"""
+
 		payload = {
 			"client_id": self.client_id,
 			"client_secret": self.client_secret,
@@ -136,6 +142,7 @@ class DonationAlertsApi:
 
 
 class Centrifugo:
+	"""Получение событий в реальном времени (Oauth2)"""
 
 	def __init__(self, socket_connection_token, access_token, user_id):
 		self.socket_connection_token = socket_connection_token
@@ -145,7 +152,7 @@ class Centrifugo:
 		self.uri = "wss://centrifugo.donationalerts.com/connection/websocket"
 
 	def connect(self):
-		self.ws = create_connection(self.uri)
+		self.ws = create_connection(self.uri) # Подключаемся к серверу
 		self.ws.send(json.dumps(
 			{
 				"params": {
@@ -189,18 +196,19 @@ class Centrifugo:
 			))
 	
 		answer = {"response": self.ws.recv(), "sec_response": self.ws.recv()}
-		return answer
+		return answer # Возвращаем первые два ответа от сервера
 
 	def listen(self):
-		return json.loads(self.ws.recv())["result"]["data"]["data"]
+		return json.loads(self.ws.recv())["result"]["data"]["data"] # Возвращаем 3-й ответ от сервера
 
 sio = socketio.Client()
 
 
 class Alert:
+	"""Получение донатов в реальном времени без Oauth2"""
 
 	def __init__(self, token):
-		self.token = token
+		self.token = token # TOKEN можно скопировать здесь - https://www.donationalerts.com/dashboard/general
 
 	def event(self):
 		def wrapper(function):
@@ -210,7 +218,7 @@ class Alert:
 
 			@sio.on("donation")
 			def on_message(data):
-				function(json.loads(data))
+				function(json.loads(data)) # Отправляем полученные данные в функцию
 
 			sio.connect("wss://socket.donationalerts.ru:443", transports="websocket")
 		return wrapper
