@@ -1,0 +1,11 @@
+# Ignore pycache
+
+__pycache__
+
+# Ignore dist
+
+/dist
+
+# Ignore pyproject
+
+pyproject.toml
