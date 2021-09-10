@@ -97,7 +97,7 @@ async def login():
     fugo = Centrifugo(user.socket_connection_token, access_token, user.id)
     event = await fugo.subscribe(Channels.NEW_DONATION_ALERTS) # В новой версии .connect не нужен.
     
-    return event.objects # Возвращает JSON object
+    return event.objects # Возвращает JSON object (в практически каждом методе есть objects)
    
     
 if __name__ == "__main__":
