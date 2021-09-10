@@ -65,3 +65,61 @@ def new_donation(event):
 Все примеры вы можете посмотреть в папке [Examples](https://github.com/Fsoky/Donation-Alerts-API-Python/tree/main/examples) \
 __[Donation Alerts API Python - небольшой обзор](https://www.youtube.com/watch?v=ZJVVDRNR9Vw)__ - в ролике, автор рассказывает о первой версии, возможно кому-то будет интересно \
 __[Donation Alerts API Python - получение событий в реальном времени](https://www.youtube.com/watch?v=pAdPuScKSNs)__ - небольшая история обновлений и демонстрация новых возможностей
+
+# Asyncio Donation Alerts API
+__Новое обновление 1.0.9 beta__
+
+Наконец-то можно использовать модуль асинхронно. Все очень просто, методы не поменялись, остается только дописывать await, пример ниже.
+
+### Работа с центрифугой (донаты в реальном времени Oauth2)
+
+```py
+from flask import Flask, redirect, request # pip install flask[async]
+
+from donationalerts_api.asyncio_api import DonationAlertsApi, Centrifugo
+from donationalerts_api.modules import Scopes, Channels
+
+app = Flask(__name__)
+api = DonationAlertsApi("client id", "client secret", "http://127.0.0.1:5000/login", [Scopes.USER_SHOW, Scopes.DONATION_SUBSCRIBE])
+
+
+@app.route("/", methods=["get"])
+def index():
+    return redirect(api.login())
+    
+
+@app.route("/login", methods=["get"])
+async def login():
+    code = request.args.get("code")
+    access_token = await api.get_access_token(code)
+    user = await api.user(access_token)
+    
+    fugo = Centrifugo(user.socket_connection_token, access_token, user.id)
+    event = await fugo.subscribe(Channels.NEW_DONATION_ALERTS) # В новой версии .connect не нужен.
+    
+    return event.objects # Возвращает JSON object
+   
+    
+if __name__ == "__main__":
+    app.run(debug=True)
+```
+
+### Донаты в реальном времени без Oauth2
+
+```py
+from donationalerts_api.asyncio_api import Alert
+
+alert = Alert("token")
+
+
+@alert.event
+async def handler(event):
+    print(f"{event.username} пожертвовал {event.amount_formatted} {event.currency} | {event.message}")
+    """ Вывод:
+    Fsoky пожертвовал 9999.0 RUB | Тут его сообщение.
+    """
+```
+
+Как вы поняли, чтобы работать с асинхронном, нужно импортировать классы из пакета `asyncio_api`.
+
+__Обзор новой версии от автора:__ *скоро...*
