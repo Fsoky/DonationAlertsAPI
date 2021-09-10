@@ -9,14 +9,16 @@ __pip install donationalerts-api -U__
 ![DA API](https://github.com/Fsoky/Donation-Alerts-API-Python/blob/main/images/logo-api.jpg)
 
 ## 🔥 Простой пример работы
-В этом примере мы логинимся в нашем приложении с определенными правами, получаем _access_token_, после в пременной `user` мы получаем JSON-объект, в котором содержится информация, в переменной `donation_list` тоже хранится информация, только уже другая. И теперь возвращаем нашу переменную `user`
+В этом примере мы логинимся в нашем приложении с определенными правами, получаем _access_token_, после в пременной `user` мы получаем JSON-объект, в котором содержится информация, в переменной `donations` тоже хранится информация, только уже другая. И теперь возвращаем нашу переменную `user`
 
-`DonationAlertsApi` - основной класс для работы с DA API, на вход принимает _client_id_, _client_secret_, _redirect_url_, _scopes_ \
+`DonationAlertsApi` - основной класс для работы с DA API, на вход принимает _client_id_, _client_secret_, _redirect_uri_, _scopes_ \
 `Scopes` - позволит вам передать ряд прав в удобном формате, все права можете посмотреть в [оф. документации](https://www.donationalerts.com/apidoc#authorization__scopes), также имеет атрибут _ALL_SCOPES_ для передачи всех прав сразу (Scopes.ALL_SCOPES)
 
-```python
-from flask import Flask, redirect
-from donationalerts_api import DonationAlertsApi, Scopes
+```py
+from flask import Flask, redirect, request
+
+from donationalerts_api import DonationAlertsApi
+from donationalerts_api.modules import Scopes
 
 app = Flask(__name__)
 api = DonationAlertsApi("client id", "client secret", "http://127.0.0.1:5000/login", [Scopes.USER_SHOW, Scopes.DONATION_INDEX])
@@ -29,13 +31,13 @@ def index():
 
 @app.route("/login", methods=["get"])
 def login():
-	code = api.get_code()
+	code = request.args.get("code") # Получить нужный код для access token
 	access_token = api.get_access_token(code)
 
-	user = api.get_user(access_token)
-	donation_list = api.get_donations(access_token)
+	user = api.user(access_token)
+	donations = api.donations_list(access_token) # Получить список донатов
 
-	return user
+	return user.objects # Возвращает JSON object
 
 if __name__ == "__main__":
 	app.run(debug=True)
@@ -46,14 +48,18 @@ if __name__ == "__main__":
 
 ![ТОКЕН](https://github.com/Fsoky/Donation-Alerts-API-Python/blob/main/images/example_alert_2.png)
 
-```python
+```py
 from donationalerts_api import Alert
 
 alert = Alert("token")
 
 @alert.event()
 def new_donation(event):
-	print(event)
+    """ Пример обращения
+    event.username - получает никнейм донатера
+    event.objects - вернуть JSON object
+    """
+	print(event) # Выведет все доступные атрибуты, к которым можно обратиться
 ```
 
 Все примеры вы можете посмотреть в папке [Examples](https://github.com/Fsoky/Donation-Alerts-API-Python/tree/main/examples) \
