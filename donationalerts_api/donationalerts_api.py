@@ -1,5 +1,6 @@
 import json
 import requests
+from datetime import datetime
 
 from websocket import create_connection
 import socketio
@@ -84,13 +85,13 @@ class DonationAlertsApi:
 		}
 
 		objs = requests.get(f"{DEFAULT_API_LINK}alerts/donations", headers=headers).json()
-		donations = Donations(objects=objs["data"])
+		donations = Donations(objects=objs)
 
 		for obj in objs["data"]:
 			donation_object = DonationsData(
 				obj["amount"],
 				obj["amount_in_user_currency"],
-				obj["created_at"],
+				datetime.strptime(obj["created_at"], "%Y-%m-%d %H:%M:%S"),
 				obj["currency"],
 				obj["id"],
 				obj["is_shown"],
@@ -221,7 +222,7 @@ class Centrifugo:
 		return CentrifugoResponse(
 			obj["amount"],
 			obj["amount_in_user_currency"],
-			obj["created_at"],
+			datetime.strptime(obj["created_at"], "%Y-%m-%d %H:%M:%S"),
 			obj["currency"],
 			obj["id"],
 			obj["is_shown"],
@@ -271,7 +272,7 @@ class Alert:
 						data["currency"],
 						data["message"],
 						data["header"],
-						data["date_created"],
+						datetime.strptime(data["date_created"], "%Y-%m-%d %H:%M:%S"),
 						data["emotes"],
 						data["ap_id"],
 						data["_is_test_alert"],

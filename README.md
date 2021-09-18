@@ -112,7 +112,7 @@ from donationalerts_api.asyncio_api import Alert
 alert = Alert("token")
 
 
-@alert.event
+@alert.event()
 async def handler(event):
     print(f"{event.username} пожертвовал {event.amount_formatted} {event.currency} | {event.message}")
     """ Вывод:

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Any
 
 
 @dataclass
@@ -17,7 +18,7 @@ class Event:
 	currency: str
 	message: str
 	header: str
-	date_created: str
+	date_created: Any
 	emotes: str
 	ap_id: str
 	_is_test_alert: bool
@@ -38,7 +39,7 @@ class DonationsData:
 
 	amount: int
 	amount_in_user_currency: float
-	created_at: str
+	created_at: Any
 	currency: str
 	id: int
 	is_shown: int
@@ -79,7 +80,7 @@ class CentrifugoResponse:
 
 	amount: int
 	amount_in_user_currency: float
-	created_at: str
+	created_at: Any
 	currency: str
 	id: int
 	is_shown: int

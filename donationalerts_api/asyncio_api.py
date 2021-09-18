@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 import asyncio
 import socketio
@@ -84,14 +85,15 @@ class DonationAlertsApi:
 
 		async with aiohttp.ClientSession() as session:
 			async with session.get(f"{DEFAULT_API_LINK}alerts/donations", headers=headers) as response:
+				print(response)
 				objs = await response.json()
-				donations = Donations(objects=objs["data"])
+				donations = Donations(objects=objs)
 
 				for obj in objs["data"]:
 					donation_object = DonationsData(
 						obj["amount"],
 						obj["amount_in_user_currency"],
-						obj["created_at"],
+						datetime.strptime(obj["created_at"], "%Y-%m-%d %H:%M:%S"),
 						obj["currency"],
 						obj["id"],
 						obj["is_shown"],
@@ -230,7 +232,7 @@ class Centrifugo:
 					return CentrifugoResponse(
 						obj["amount"],
 						obj["amount_in_user_currency"],
-						obj["created_at"],
+						datetime.strptime(obj["created_at"], "%Y-%m-%d %H:%M:%S"),
 						obj["currency"],
 						obj["id"],
 						obj["is_shown"],
@@ -281,7 +283,7 @@ class Alert:
 							data["currency"],
 							data["message"],
 							data["header"],
-							data["date_created"],
+							datetime.strptime(data["date_created"], "%Y-%m-%d %H:%M:%S"),
 							data["emotes"],
 							data["ap_id"],
 							data["_is_test_alert"],
