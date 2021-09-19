@@ -6,6 +6,10 @@ __pycache__
 
 /dist
 
-# Ignore pyproject
+# Ignore pyproject.toml
 
 pyproject.toml
+
+# Ignore poetry.lock
+
+poetry.lock

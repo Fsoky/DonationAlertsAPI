@@ -12,7 +12,7 @@ DEFAULT_URL = "https://www.donationalerts.com/oauth/"
 DEFAULT_API_LINK = "https://www.donationalerts.com/api/v1/"
 
 
-class DonationAlertsApi:
+class DonationAlertsAPI:
 	
 	def __init__(self, client_id, client_secret, redirect_uri, scopes):
 		symbols = [",", ", ", " ", "%20"]
@@ -59,33 +59,14 @@ class DonationAlertsApi:
 					obj
 					) if full_json else obj["access_token"]
 
-	async def donations_list(self, access_token, *, current_page: int=1, from_page: int=1, last_page: int=13, per_page: int=30, to: int=30, total: int=385):
+	async def donations_list(self, access_token, *, page: int=1):
 		headers = {
 			"Authorization": f"Bearer {access_token}",
 			"Content-Type": "application/x-www-form-urlencoded"
 		}
 
-		"""Pagination in development"""
-		meta = {
-			"current_page": current_page,
-			"from": from_page,
-			"last_page": last_page,
-			"path": f"{DEFAULT_API_LINK}alerts/donations",
-			"per_page": per_page,
-			"to": to,
-			"total": total
-		}
-		links = {
-			"first": f"{DEFAULT_API_LINK}alerts/donations?page={from_page}",
-			"last": f"{DEFAULT_API_LINK}alerts/donations?page={last_page}",
-			"last": f"{DEFAULT_API_LINK}alerts/donations?page={last_page}",
-			"next": f"{DEFAULT_API_LINK}alerts/donations?page={current_page + 1}",
-			"prev": None
-		}
-
 		async with aiohttp.ClientSession() as session:
-			async with session.get(f"{DEFAULT_API_LINK}alerts/donations", headers=headers) as response:
-				print(response)
+			async with session.get(f"{DEFAULT_API_LINK}alerts/donations?page={page}", headers=headers) as response:
 				objs = await response.json()
 				donations = Donations(objects=objs)
 

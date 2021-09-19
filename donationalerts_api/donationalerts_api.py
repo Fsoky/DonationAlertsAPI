@@ -11,7 +11,7 @@ DEFAULT_URL = "https://www.donationalerts.com/oauth/"
 DEFAULT_API_LINK = "https://www.donationalerts.com/api/v1/"
 
 
-class DonationAlertsApi:
+class DonationAlertsAPI:
 	"""
 	This class describes work with Donation Alerts API
 	"""
@@ -60,31 +60,13 @@ class DonationAlertsApi:
 			obj
 			) if full_json else obj["access_token"]
 
-	def donations_list(self, access_token, *, current_page: int=1, from_page: int=1, last_page: int=13, per_page: int=30, to: int=30, total: int=385):
+	def donations_list(self, access_token, *, page: int=1):
 		headers = {
 			"Authorization": f"Bearer {access_token}",
 			"Content-Type": "application/x-www-form-urlencoded"
 		}
 
-		"""Pagination in development"""
-		meta = {
-			"current_page": current_page,
-			"from": from_page,
-			"last_page": last_page,
-			"path": f"{DEFAULT_API_LINK}alerts/donations",
-			"per_page": per_page,
-			"to": to,
-			"total": total
-		}
-		links = {
-			"first": f"{DEFAULT_API_LINK}alerts/donations?page={from_page}",
-			"last": f"{DEFAULT_API_LINK}alerts/donations?page={last_page}",
-			"last": f"{DEFAULT_API_LINK}alerts/donations?page={last_page}",
-			"next": f"{DEFAULT_API_LINK}alerts/donations?page={current_page + 1}",
-			"prev": None
-		}
-
-		objs = requests.get(f"{DEFAULT_API_LINK}alerts/donations", headers=headers).json()
+		objs = requests.get(f"{DEFAULT_API_LINK}alerts/donations?page={page}", headers=headers).json()
 		donations = Donations(objects=objs)
 
 		for obj in objs["data"]:
