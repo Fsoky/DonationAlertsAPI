@@ -56,10 +56,13 @@ alert = Alert("token")
 @alert.event()
 def new_donation(event):
     """ Пример обращения
+
     event.username - получает никнейм донатера
     event.objects - вернуть JSON object
+
     """
-	print(event) # Выведет все доступные атрибуты, к которым можно обратиться
+
+    print(event) # Выведет все доступные атрибуты, к которым можно обратиться
 ```
 
 Все примеры вы можете посмотреть в папке [Examples](https://github.com/Fsoky/Donation-Alerts-API-Python/tree/main/examples) \
@@ -115,8 +118,11 @@ alert = Alert("token")
 @alert.event()
 async def handler(event):
     print(f"{event.username} пожертвовал {event.amount_formatted} {event.currency} | {event.message}")
+
     """ Вывод:
+
     Fsoky пожертвовал 9999.0 RUB | Тут его сообщение.
+    
     """
 ```
 
