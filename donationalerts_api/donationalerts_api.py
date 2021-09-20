@@ -49,8 +49,7 @@ class DonationAlertsAPI:
 			"scope": self.scope
 		}
 
-		access_token = requests.post(f"{DEFAULT_URL}token", data=payload).json()
-		self.refresh_token = access_token.get("refresh_token")
+		obj = requests.post(f"{DEFAULT_URL}token", data=payload).json()
 
 		return Data(
 			obj["access_token"],

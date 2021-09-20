@@ -11,17 +11,17 @@ __pip install donationalerts-api -U__
 ## 🔥 Простой пример работы
 В этом примере мы логинимся в нашем приложении с определенными правами, получаем _access_token_, после в пременной `user` мы получаем JSON-объект, в котором содержится информация, в переменной `donations` тоже хранится информация, только уже другая. И теперь возвращаем нашу переменную `user`
 
-`DonationAlertsApi` - основной класс для работы с DA API, на вход принимает _client_id_, _client_secret_, _redirect_uri_, _scopes_ \
+`DonationAlertsAPI` - основной класс для работы с DA API, на вход принимает _client_id_, _client_secret_, _redirect_uri_, _scopes_ \
 `Scopes` - позволит вам передать ряд прав в удобном формате, все права можете посмотреть в [оф. документации](https://www.donationalerts.com/apidoc#authorization__scopes), также имеет атрибут _ALL_SCOPES_ для передачи всех прав сразу (Scopes.ALL_SCOPES)
 
 ```py
 from flask import Flask, redirect, request
 
-from donationalerts_api import DonationAlertsApi
+from donationalerts_api import DonationAlertsAPI
 from donationalerts_api.modules import Scopes
 
 app = Flask(__name__)
-api = DonationAlertsApi("client id", "client secret", "http://127.0.0.1:5000/login", [Scopes.USER_SHOW, Scopes.DONATION_INDEX])
+api = DonationAlertsAPI("client id", "client secret", "http://127.0.0.1:5000/login", [Scopes.USER_SHOW, Scopes.DONATION_INDEX])
 
 
 @app.route("/", methods=["get"])
@@ -79,11 +79,11 @@ __Новое обновление 1.0.9 beta__
 ```py
 from flask import Flask, redirect, request # pip install flask[async]
 
-from donationalerts_api.asyncio_api import DonationAlertsApi, Centrifugo
+from donationalerts_api.asyncio_api import DonationAlertsAPI, Centrifugo
 from donationalerts_api.modules import Scopes, Channels
 
 app = Flask(__name__)
-api = DonationAlertsApi("client id", "client secret", "http://127.0.0.1:5000/login", [Scopes.USER_SHOW, Scopes.DONATION_SUBSCRIBE])
+api = DonationAlertsAPI("client id", "client secret", "http://127.0.0.1:5000/login", [Scopes.USER_SHOW, Scopes.DONATION_SUBSCRIBE])
 
 
 @app.route("/", methods=["get"])
@@ -127,5 +127,3 @@ async def handler(event):
 ```
 
 Как вы поняли, чтобы работать с асинхронном, нужно импортировать классы из пакета `asyncio_api`.
-
-__Обзор новой версии от автора:__ *скоро...*
