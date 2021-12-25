@@ -269,7 +269,7 @@ class Alert:
 							data["ap_id"],
 							data["_is_test_alert"],
 							data["message_type"],
-							data["preset_id"],
+							data.get("preset_id", None),
 							data
 						)
 					)
