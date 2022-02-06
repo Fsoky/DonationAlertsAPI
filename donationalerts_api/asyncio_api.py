@@ -283,5 +283,5 @@ class Alert:
 	
 	def run(self):
 		loop = asyncio.get_event_loop()
-		loop.run_until_complete(self.wrapper())
+		loop.run_until_complete(self._wrapper())
 		return loop.run_forever()
