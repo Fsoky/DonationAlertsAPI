@@ -236,6 +236,7 @@ class Alert:
 
 	def __init__(self, token):
 		self.token = token
+		self._wrapper = None
 
 	def event(self):
 		def decorate(function):
@@ -275,9 +276,12 @@ class Alert:
 					)
 
 				await sio.connect("wss://socket.donationalerts.ru:443", transports="websocket")
-
-			loop = asyncio.get_event_loop()
-			loop.run_until_complete(wrapper())
-			return loop.run_forever()
+			
+			self._wrapper = wrapper
 
 		return decorate
+	
+	def run(self):
+		loop = asyncio.get_event_loop()
+		loop.run_until_complete(self.wrapper())
+		return loop.run_forever()
