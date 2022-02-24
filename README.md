@@ -47,4 +47,14 @@ if __name__ == "__main__":
     app.run(debug=True)
 ```
 
-[Смотреть больше примеров](https://github.com/Fsoky/Donation-Alerts-API-Python/tree/main/examples)
+*[Смотреть больше примеров](https://github.com/Fsoky/Donation-Alerts-API-Python/tree/main/examples)*
+
+**Обзоры версий 👀** \
+[Donation Alerts API Версия 1.0.0](https://www.youtube.com/watch?v=ZJVVDRNR9Vw) \
+[Donation Alerts API Версия 1.0.6](https://www.youtube.com/watch?v=pAdPuScKSNs) \
+[Donation Alerts API Версия 2.0.0](https://www.youtube.com/watch?v=ln7fvwdy5zo)
+
+### Присоединяйся к нам
+[![Vkontakte](https://img.shields.io/badge/Vkontakte-black?style=for-the-badge&logo=VK)](https://vk.com/fsoky)
+[![YouTube](https://img.shields.io/badge/YouTube-red?style=for-the-badge&logo=YouTube)](https://youtube.com/c/Фсоки)
+[![Telegram](https://img.shields.io/badge/Telegram-blue?style=for-the-badge&logo=Telegram)](https://t.me/fsokycommunity)
