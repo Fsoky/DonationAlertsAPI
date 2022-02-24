@@ -1,15 +1,3 @@
-# Ignore pycache
-
-__pycache__
-
-# Ignore dist
-
-/dist
-
-# Ignore pyproject.toml
-
-pyproject.toml
-
-# Ignore poetry.lock
-
-poetry.lock
+__pycache__/
+dist/
+sdist/
