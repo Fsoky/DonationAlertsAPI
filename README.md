@@ -4,7 +4,7 @@
 ![Python](https://img.shields.io/badge/Python-3.8-blue?style=for-the-badge&logo=python)
 ![aiohttp](https://img.shields.io/badge/aiohttp-3.8.1-blue?style=for-the-badge&logo=aiohttp)
 ![python-socketio](https://img.shields.io/badge/socketio-5.5.2-blue?style=for-the-badge)
-![websockets](https://img.shields.io/badge/websockets-10.2-blue?style=for-the-badge)
+![websockets](https://img.shields.io/badge/websockets-10.2-blue?style=for-the-badge) \
 ![websocket-client](https://img.shields.io/badge/websocket_client-1.2.3-blue?style=for-the-badge)
 
 ![requests](https://img.shields.io/badge/requests-important?style=for-the-badge)
