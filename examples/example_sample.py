@@ -1,7 +1,5 @@
 from flask import Flask, redirect, request
-
-from donationalerts_api import DonationAlertsAPI
-from donationalerts_api.modules import Scopes
+from donationalerts_api import DonationAlertsAPI, Scopes
 
 app = Flask(__name__)
 api = DonationAlertsAPI("client id", "client secret", "http://127.0.0.1:5000/login", [Scopes.USER_SHOW, Scopes.DONATION_INDEX])

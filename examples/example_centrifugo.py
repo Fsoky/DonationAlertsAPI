@@ -1,7 +1,5 @@
 from flask import Flask, redirect, request
-
-from donationalerts_api import DonationAlertsAPI, Centrifugo
-from donationalerts_api.modules import Scopes, Channels
+from donationalerts import DonationAlertsAPI, Centrifugo, Scopes, Channels
 
 app = Flask(__name__)
 api = DonationAlertsAPI("client id", "client secret", "http://127.0.0.1:5000/login", [Scopes.USER_SHOW, Scopes.DONATION_SUBSCRIBE])

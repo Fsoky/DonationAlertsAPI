@@ -1,4 +1,4 @@
-from donationalerts_api import Alert
+from donationalerts import Alert
 
 alert = Alert("token")
 
