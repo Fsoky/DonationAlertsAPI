@@ -1,0 +1,5 @@
+aiohttp
+python_socketio
+requests
+websocket_client
+websockets
