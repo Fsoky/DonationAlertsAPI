@@ -13,11 +13,24 @@
 ![datetime](https://img.shields.io/badge/datetime-blueviolet?style=for-the-badge)
 
 ## Установка 💾
-`windows:` pip install DonationAlertsAPI
+- Установка, используя пакетный менеджер pip
+```
+$ pip install DonationAlertsAPI
+```
+- Установка с GitHub *(требуется [git](https://git-scm.com/downloads))*
+```
+$ git clone https://github.com/Fsoky/DonationAlertsAPI
+$ cd DonationAlertsAPI
+$ python setup.py install
+```
+- Или
+```
+$ pip install git+https://github.com/Fsoky/DonationAlertsAPI
+```
 
-`linux` `macos:` pip3 install DonationAlertsAPI
+## Дополнительно
+Создайте свое собственное приложение для работы с *DA API*
 
-- **Дополнительно** \
 [Создать свое приложение Donation Alerts](https://www.donationalerts.com/application/clients) \
 [Официальная документация Donation Alerts API](https://www.donationalerts.com/apidoc)
 
