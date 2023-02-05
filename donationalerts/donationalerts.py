@@ -1,6 +1,7 @@
 import json
 import requests
 from datetime import datetime
+from urllib.parse import quote, urlencode
 
 from websocket import create_connection
 import socketio
@@ -16,28 +17,24 @@ class DonationAlertsAPI:
 	This class describes work with Donation Alerts API
 	"""
 
-	def __init__(self, client_id, client_secret, redirect_uri, scopes):
-		symbols = [",", ", ", " ", "%20"]
-
-		if isinstance(scopes, list):
-			obj_scopes = []
-			for scope in scopes:
-				obj_scopes.append(scope)
-
-			scopes = " ".join(obj_scopes)
-			
-		for symbol in symbols:
-			if symbol in scopes:
-				self.scope = scopes.replace(symbol, "%20").strip() # Replaces some symbols on '%20' for stable work
-			else:
-				self.scope = scopes
-
+	def __init__(self, client_id, client_secret, redirect_uri, scopes: str | [str]):
+		self.scope = scopes
 		self.client_id = client_id
 		self.client_secret = client_secret
 		self.redirect_uri = redirect_uri
 
 	def login(self):
-		return f"{DEFAULT_URL}authorize?client_id={self.client_id}&redirect_uri={self.redirect_uri}&response_type=code&scope={self.scope}"
+		scopes = self.scope
+		if hasattr(self.scope, '__iter__'):
+			scopes = ' '.join(map(lambda x: x.value, self.scope))
+
+		d = {
+			'client_id': self.client_id,
+			'redirect_url': self.redirect_uri,
+			'response_type': 'code',
+			'scope': scopes,
+		}
+		return f"{DEFAULT_URL}authorize?" + urlencode(query=d, quote_via=quote)
 
 	def get_access_token(self, code, *, full_json=False):
 		payload = {
@@ -147,13 +144,12 @@ class DonationAlertsAPI:
 
 
 class Centrifugo:
+	uri = "wss://centrifugo.donationalerts.com/connection/websocket"
 
 	def __init__(self, socket_connection_token, access_token, user_id):
 		self.socket_connection_token = socket_connection_token
 		self.access_token = access_token
 		self.user_id = user_id
-
-		self.uri = "wss://centrifugo.donationalerts.com/connection/websocket"
 
 	def subscribe(self, channels):
 		chnls = [f"{channels}{self.user_id}"]
