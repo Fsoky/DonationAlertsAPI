@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Any
+from enum import Enum
 
 
 @dataclass
@@ -93,3 +94,24 @@ class CentrifugoResponse:
 	username: str
 	reason: str
 	objects: dict
+
+
+class Scope(Enum):
+	def __repr__(self):
+		return self._value_
+
+	OAUTH_USER_SHOW = "oauth-user-show"
+	OAUTH_DONATION_SUBSCRIBE = "oauth-donation-subscribe"
+	OAUTH_DONATION_INDEX = "oauth-donation-index"
+	OAUTH_CUSTOM_ALERT_STORE = "oauth-custom_alert-store"
+	OAUTH_GOAL_SUBSCRIBE = "oauth-goal-subscribe"
+	OAUTH_POLL_SUBSCRIBE = "oauth-poll-subscribe"
+
+	ALL = [
+		OAUTH_USER_SHOW,
+		OAUTH_DONATION_SUBSCRIBE,
+		OAUTH_DONATION_INDEX,
+		OAUTH_CUSTOM_ALERT_STORE,
+		OAUTH_GOAL_SUBSCRIBE,
+		OAUTH_POLL_SUBSCRIBE,
+	]
