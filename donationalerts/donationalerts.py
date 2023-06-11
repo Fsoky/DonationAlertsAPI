@@ -96,6 +96,8 @@ class DonationAlertsAPI:
                 obj["shown_at"],
                 obj["username"],
             )
+            if not any(d.id == obj["id"] for d in donations.donation):
+                donations.donation.append(donation_object)
             donations.donation.append(donation_object)
 
         return donations
