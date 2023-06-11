@@ -18,6 +18,7 @@ from .utils import (
 DEFAULT_URL = "https://www.donationalerts.com/oauth/"
 DEFAULT_API_LINK = "https://www.donationalerts.com/api/v1/"
 
+obj_token = None
 
 class DonationAlertsAPI:
     """
@@ -55,18 +56,19 @@ class DonationAlertsAPI:
             "scope": self.scope,
         }
 
-        obj = requests.post(f"{DEFAULT_URL}token", data=payload).json()
-
+        global obj_token
+        if obj_token is None:
+            obj_token = requests.post(f"{DEFAULT_URL}token", data=payload).json()
         return (
             Data(
-                obj["access_token"],
-                obj["expires_in"],
-                obj["refresh_token"],
-                obj["token_type"],
-                obj,
+                obj_token["access_token"],
+                obj_token["expires_in"],
+                obj_token["refresh_token"],
+                obj_token["token_type"],
+                obj_token,
             )
             if full_json
-            else obj["access_token"]
+            else obj_token["access_token"]
         )
 
     def donations_list(self, access_token, *, page: int = 1):
