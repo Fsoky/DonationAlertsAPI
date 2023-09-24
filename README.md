@@ -1,5 +1,8 @@
 ![DA API](https://github.com/Fsoky/Donation-Alerts-API-Python/blob/main/images/dapi_banner.jpg)
 
+### [!] Модуль в тех. неисправном состоянии, могут пристутствовать баги и т.п.
+> _Планируется к переписанию в этом году.. осенью... или зимой_
+
 ## Инструменты 🛠
 ![Python](https://img.shields.io/badge/Python-3.8-blue?style=for-the-badge&logo=python)
 ![aiohttp](https://img.shields.io/badge/aiohttp-3.8.1-blue?style=for-the-badge&logo=aiohttp)
