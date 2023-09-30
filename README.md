@@ -1,18 +1,11 @@
-![DA API](https://github.com/Fsoky/Donation-Alerts-API-Python/blob/main/images/dapi_banner.jpg)
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&pause=1000&color=F79913&center=true&vCenter=true&width=435&lines=Donation+Alerts+API;Work+with+donations)](https://git.io/typing-svg)
 
-### [!] Модуль в тех. неисправном состоянии, могут пристутствовать баги и т.п.
-> _Планируется к переписанию в этом году.. осенью... или зимой_
-
-## Инструменты 🛠
-![Python](https://img.shields.io/badge/Python-3.8-blue?style=for-the-badge&logo=python)
-![aiohttp](https://img.shields.io/badge/aiohttp-3.8.1-blue?style=for-the-badge&logo=aiohttp)
-![python-socketio](https://img.shields.io/badge/socketio-5.5.2-blue?style=for-the-badge)
-![websockets](https://img.shields.io/badge/websockets-10.2-blue?style=for-the-badge) \
-![websocket-client](https://img.shields.io/badge/websocket_client-1.2.3-blue?style=for-the-badge)
-
+#### 🛠 Инструменты
+![Python](https://img.shields.io/badge/Python-3.10-blue?style=for-the-badge&logo=python)
+![aiohttp](https://img.shields.io/badge/aiohttp-green?style=for-the-badge&logo=aiohttp)
 ![requests](https://img.shields.io/badge/requests-important?style=for-the-badge)
 ![asyncio](https://img.shields.io/badge/asyncio-red?style=for-the-badge)
-![json](https://img.shields.io/badge/json-green?style=for-the-badge&logo=json)
+![json](https://img.shields.io/badge/json-gray?style=for-the-badge&logo=json)
 ![datetime](https://img.shields.io/badge/datetime-blueviolet?style=for-the-badge)
 
 ## Установка 💾
@@ -37,40 +30,39 @@ $ pip install git+https://github.com/Fsoky/DonationAlertsAPI
 [Создать свое приложение Donation Alerts](https://www.donationalerts.com/application/clients) \
 [Официальная документация Donation Alerts API](https://www.donationalerts.com/apidoc)
 
-## Пример использования 🎈
+## Пример использования
 ```py
 from flask import Flask, redirect, request
-from donationalerts import DonationAlertsAPI, Scopes
+from donationalerts import DonationAlertsAPI, Scope
 
 app = Flask(__name__)
-api = DonationAlertsAPI("client id", "client secret", "http://127.0.0.1:5000/login", Scopes.USER_SHOW)
+api = DonationAlertsAPI(
+    "CLIENT_ID",
+    "CLIENT_SECRET",
+    "http://127.0.0.1:5000/login",
+    [
+        Scope.OAUTH_USER_SHOW,
+        Scope.OAUTH_DONATION_INDEX
+    ]
+)
 
-@app.route("/", methods=["GET"])
+
+@app.get("/")
 def index():
-    return redirect(api.login())
+    return redirect(api.authorize.login())
 
 
-@app.route("/login", methods=["GET"])
+@app.get("/login")
 def login():
     code = request.args.get("code")
-    access_token = api.get_access_token(code)
-    
-    user = api.user(access_token)
-    return user.objects
+    access_token = api.authorize.get_access_token(code)
+
+    user = api.user.get(access_token.access_token)
+    return user.to_dict()
 
 
 if __name__ == "__main__":
     app.run(debug=True)
 ```
 
-*[Смотреть больше примеров](https://github.com/Fsoky/Donation-Alerts-API-Python/tree/main/examples)*
-
-**Обзоры версий 👀** \
-[Donation Alerts API Версия 1.0.0](https://www.youtube.com/watch?v=ZJVVDRNR9Vw) \
-[Donation Alerts API Версия 1.0.6](https://www.youtube.com/watch?v=pAdPuScKSNs) \
-[Donation Alerts API Версия 2.0.0](https://www.youtube.com/watch?v=ln7fvwdy5zo)
-
-### Присоединяйся к нам
-[![Vkontakte](https://img.shields.io/badge/Vkontakte-black?style=for-the-badge&logo=VK)](https://vk.com/fsoky)
-[![YouTube](https://img.shields.io/badge/YouTube-red?style=for-the-badge&logo=YouTube)](https://youtube.com/c/Фсоки)
-[![Telegram](https://img.shields.io/badge/Telegram-blue?style=for-the-badge&logo=Telegram)](https://t.me/fsoky_community)
+> Если желаете работать _асинхронно_, импортируйте класс **AIODonationAlertsAPI**, методы работы аналогичны.
