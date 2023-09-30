@@ -1,5 +1,7 @@
 [![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&pause=1000&color=F79913&center=true&vCenter=true&width=435&lines=Donation+Alerts+API;Work+with+donations)](https://git.io/typing-svg)
 
+# [!] Модуль в разработке.
+
 #### 🛠 Инструменты
 ![Python](https://img.shields.io/badge/Python-3.10-blue?style=for-the-badge&logo=python)
 ![aiohttp](https://img.shields.io/badge/aiohttp-green?style=for-the-badge&logo=aiohttp)
